@@ -36,4 +36,6 @@ CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL REFERENCES orders(id),
     item_id INTEGER NOT NULL REFERENCES items(id),
-    quantit
+    quantity INTEGER NOT NULL
+);
+
