@@ -1,31 +1,22 @@
-from flask import Flask, jsonify
-import psycopg2
-import os
+from flask import Flask
+from routes.cadets import cadets_bp
+from routes.items import items_bp
+from routes.orders import orders_bp
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-def get_connection():
-    return psycopg2.connect(
-        host="db",  # IMPORTANT: service name from docker-compose
-        database="storedb",
-        user="storeuser",
-        password="storepass"
-    )
+    app.register_blueprint(cadets_bp, url_prefix="/cadets")
+    app.register_blueprint(items_bp, url_prefix="/items")
+    app.register_blueprint(orders_bp, url_prefix="/orders")
 
-@app.route("/health")
-def health():
-    return jsonify({"status": "ok"})
+    @app.route("/health")
+    def health():
+        return {"status": "ok"}
 
-@app.route("/cadets")
-def get_cadets():
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM cadets;")
-    rows = cur.fetchall()
-    cur.close()
-    conn.close()
+    return app
 
-    return jsonify(rows)
+app = create_app()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
