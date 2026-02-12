@@ -3,6 +3,12 @@ from db import get_connection
 
 orders_bp = Blueprint("orders", __name__)
 
+@orders_bp.route("/", methods=["GET"])
+def get_orders():
+    from utils import query_db
+    data = query_db("SELECT * FROM orders;")
+    return jsonify(data)
+
 @orders_bp.route("/", methods=["POST"])
 def create_order():
     data = request.json
